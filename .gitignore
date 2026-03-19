@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.env
+
+# Data (tracked by DVC, not Git)
+data/raw/
+data/processed/
+
+# Models
+*.pt
+*.bin
+mlruns/
+
+# IDE
+.vscode/

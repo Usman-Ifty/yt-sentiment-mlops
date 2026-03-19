@@ -1,0 +1,25 @@
+# data
+pandas==2.2.2
+scikit-learn==1.5.0
+numpy==1.26.4
+
+# nlp / bert
+transformers==4.41.2
+torch==2.3.0
+datasets==2.19.1
+
+# experiment tracking
+mlflow==2.13.0
+
+# pipeline
+dvc==3.51.2
+
+# api
+flask==3.0.3
+flask-cors==4.0.0
+
+# testing
+pytest==8.2.0
+
+# utils
+python-dotenv==1.0.1
