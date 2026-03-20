@@ -9,12 +9,21 @@ This commit establishes the foundational skeleton for the MLOps pipeline, ensuri
 **Key Additions:**
 *   **Standardized Directory Structure:** Created segmented directories for `data` (raw & processed), `src` (api, data, model), `notebooks`, `tests`, and GitHub Actions.
 *   **Version Control:** Initialized Git for source code tracking.
-*   **Data Version Control (DVC):** Initialized `dvc` to manage large datasets and models outside of Git (via `.dvcignore` and `.gitignore`).
+*   **Data Version Control (DVC):** Initialized `dvc` to manage large datasets and models outside of Git.
 *   **Dependency Management:** Added `requirements.txt` with essential libraries (`transformers`, `mlflow`, `dvc`, `flask`, `torch`).
-*   **Environment Configuration:** Added a `.env` file (ignored by Git) to securely manage MLflow tracking URIs and model parameters.
+*   **Environment Configuration:** Added a `.env` file securely.
 
-### Next Steps 
-- **Phase 2:** Kaggle Data Acquisition & Exploratory Data Analysis (EDA)
+## 🧹 Phase 2: Data Preprocessing & EDA
+
+Integrated the Kaggle raw dataset and built out the NLP cleaning pipeline. 
+
+**Key Additions:**
+*   **Exploratory Data Analysis:** Built an interactive EDA script to explore string lengths, verify class imbalances, and map sentiment.
+*   **HuggingFace Tokenization:** Leveraged `DistilBertTokenizer` to tokenize, pad, and truncate 17,000+ texts directly into PyTorch format `.pt`.
+*   **DVC Pipelines (`dvc.yaml`):** Implemented an automated tracking and execution graph using `dvc repro`.
+*   **Unit Testing:** Wrote automated Pytest coverage for regex and text normalization helpers.
+
+### Next Steps
 - **Phase 3:** Fine-Tuning DistilBERT & MLflow Experiment Tracking
 - **Phase 4:** Flask API Development & Dockerization
 - **Phase 5:** AWS EC2 Deployment
