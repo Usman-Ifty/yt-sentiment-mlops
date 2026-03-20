@@ -9,3 +9,25 @@ stages:
       - data/processed/tokenizer
       - data/processed/label_map.json
       - data/processed/class_weights.json
+
+  train:
+    cmd: python src/model/train.py
+    deps:
+      - src/model/train.py
+      - data/processed/tokenized
+      - data/processed/class_weights.json
+    outs:
+      - models/bert/best_model
+      - models/bert/classification_report.json
+    metrics:
+      - models/bert/metrics.json:
+          cache: false
+
+  promote:
+    cmd: python src/model/promote.py
+    deps:
+      - src/model/promote.py
+      - models/bert/best_model
+    outs:
+      - models/production_version.json:
+          cache: false

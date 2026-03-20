@@ -21,10 +21,19 @@ Integrated the Kaggle raw dataset and built out the NLP cleaning pipeline.
 *   **Exploratory Data Analysis:** Built an interactive EDA script to explore string lengths, verify class imbalances, and map sentiment.
 *   **HuggingFace Tokenization:** Leveraged `DistilBertTokenizer` to tokenize, pad, and truncate 17,000+ texts directly into PyTorch format `.pt`.
 *   **DVC Pipelines (`dvc.yaml`):** Implemented an automated tracking and execution graph using `dvc repro`.
-*   **Unit Testing:** Wrote automated Pytest coverage for regex and text normalization helpers.
+*   **Unit Testing:** Pytest suite for the data pipeline.
+
+## 🤖 Phase 3: Fine-Tuning DistilBERT & MLflow Experiment Tracking
+
+Finetuned a pre-trained `distilbert-base-uncased` model to classify YouTube comments into Negative, Neutral, and Positive.
+
+**Key Additions:**
+*   **Training Script:** Added `train.py` configured with PyTorch DataLoaders, weight decay, linear scheduling, and a customized CrossEntropy loss to handle class imbalances.
+*   **Experiment Registry:** Used `MLflow` to dynamically log hyperparameters, step-loss, Validation Accuracy/F1 scores, and formally register the `best_model`.
+*   **Production Promotion:** Added `promote.py` logic to evaluate newly trained models against current production thresholds (>0.80 F1) before updating `production_version.json`.
+*   **Model Coverage:** Added robust verification tests (`test_model.py`) to assert successful loading and softmax probability structures.
 
 ### Next Steps
-- **Phase 3:** Fine-Tuning DistilBERT & MLflow Experiment Tracking
 - **Phase 4:** Flask API Development & Dockerization
 - **Phase 5:** AWS EC2 Deployment
 - **Phase 6:** Chrome Extension Integration
