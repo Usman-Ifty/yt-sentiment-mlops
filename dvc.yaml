@@ -1,0 +1,11 @@
+stages:
+  preprocess:
+    cmd: python src/data/preprocess.py
+    deps:
+      - src/data/preprocess.py
+      - data/raw/YoutubeCommentsDataSet.csv
+    outs:
+      - data/processed/tokenized
+      - data/processed/tokenizer
+      - data/processed/label_map.json
+      - data/processed/class_weights.json

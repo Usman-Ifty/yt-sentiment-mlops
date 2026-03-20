@@ -1,0 +1,32 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/data/preprocess.py
+    deps:
+    - path: data/raw/YoutubeCommentsDataSet.csv
+      hash: md5
+      md5: dc4323696d2aac0cd2f9a10707b9a18a
+      size: 3488499
+    - path: src/data/preprocess.py
+      hash: md5
+      md5: e268df623728dee68bca84cf981c34cc
+      size: 5433
+    outs:
+    - path: data/processed/class_weights.json
+      hash: md5
+      md5: 146a532df8f787eee26132977c1cd65d
+      size: 98
+    - path: data/processed/label_map.json
+      hash: md5
+      md5: db46bc209114e6adc078b8a6a0ea5709
+      size: 171
+    - path: data/processed/tokenized
+      hash: md5
+      md5: 68b68021eb508209a0ae6c1d11db99bf.dir
+      size: 15172728
+      nfiles: 10
+    - path: data/processed/tokenizer
+      hash: md5
+      md5: f77d3f86cb4e5feec90bd63ffed30e8f.dir
+      size: 263467
+      nfiles: 3
