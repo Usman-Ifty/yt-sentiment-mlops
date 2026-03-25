@@ -33,8 +33,35 @@ Finetuned a pre-trained `distilbert-base-uncased` model to classify YouTube comm
 *   **Production Promotion:** Added `promote.py` logic to evaluate newly trained models against current production thresholds (>0.80 F1) before updating `production_version.json`.
 *   **Model Coverage:** Added robust verification tests (`test_model.py`) to assert successful loading and softmax probability structures.
 
+## 🌐 Phase 4: Flask API Development & Dockerization
+
+Built a production-ready REST API to serve the fine-tuned DistilBERT model and packaged it as a Docker container.
+
+**Key Additions:**
+*   **Flask REST API (`src/api/app.py`):** Exposes `GET /` (health check) and `POST /predict` endpoint accepting single `text` or batch `texts` returning sentiment label, confidence, and per-class scores.
+*   **CORS Support:** Enabled Cross-Origin Resource Sharing (CORS) to allow the Chrome Extension to interact with the API.
+*   **Dockerfile:** Multi-stage slim Python 3.10 image copying only the `best_model` weights and `label_map.json` — keeps the image lean (~1.5GB).
+*   **`.dockerignore`:** Excludes `mlruns/`, raw data, venvs, and notebooks from the build context.
+
+**How to Run locally:**
+```bash
+# Activation
+.\venv_new\Scripts\Activate.ps1
+
+# Run API
+python src/api/app.py
+
+# build and run with Docker
+docker build -t yt-sentiment-api .
+docker run -p 5000:5000 yt-sentiment-api
+
+# Example Test (PowerShell)
+Invoke-RestMethod -Method Post -Uri "http://localhost:5000/predict" `
+    -ContentType "application/json" `
+    -Body '{"text": "This video is absolutely amazing!"}'
+```
+
 ### Next Steps
-- **Phase 4:** Flask API Development & Dockerization
 - **Phase 5:** AWS EC2 Deployment
 - **Phase 6:** Chrome Extension Integration
 - **Phase 7:** GitHub Actions CI/CD Pipeline
