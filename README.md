@@ -1,56 +1,62 @@
-# Ifty YouTube Comment Sentiments 🎥🚀
+# Ifty YouTube Comment Sentiments - Full-Stack MLOps Pipeline 🚀🧠
 
-A professional, end-to-end MLOps pipeline for analyzing YouTube comment sentiment in real-time. This system fine-tunes a **DistilBERT** Transformer model, packages it as a highly-optimized **Docker** container, and serves it via a public API on **AWS EC2**. It is seamlessly integrated into a sleek **Chrome Extension** for gamified audience analytics.
-
-## 🌟 Key Features
-*   **Vibe Rank (Gamified Analysis):** Assigns a Letter Grade (S, A, B, C, D, or F) to every YouTube video based on overall audience mood.
-*   **Top 10 Keyword Cloud:** Automatically extracts and highlights the 10 most trending words from the comment section.
-*   **Dynamic UI Highlighting:** Literally paints the YouTube page, adding [POSITIVE], [NEUTRAL], or [NEGATIVE] glow-badges to every comment.
-*   **Public AWS API:** 24/7 inference server hosted on an Amazon EC2 t3.micro instance.
+A state-of-the-art Machine Learning Operations (MLOps) system designed to monitor, analyze, and gamify YouTube audience sentiment. This platform fine-tunes a **DistilBERT Transformers** model, scales it via **Docker**, hosts it on **AWS EC2**, and delivers real-time analytics through a premium **Chrome Extension**.
 
 ---
 
-## 🛠️ The MLOps Pipeline (Technical Journey)
+## 🏗️ The Full Technical Journey (Phase-by-Phase)
 
-### Phase 1: Data Engineering & DVC
-*   **Dataset:** Cleaned and tokenized over 17,000 raw YouTube comments from Kaggle.
-*   **DVC (Data Version Control):** Integrated DVC to track large datasets and model weights securely without bloating Git history.
+### Phase 1: Foundational Infrastructure
+*   **Architectural Design:** Established a standardized MLOps directory structure to separate data engineering (`src/data`), model development (`src/model`), and API serving (`src/api`).
+*   **Version Control:** Initialized **Git** for source tracking and **DVC (Data Version Control)** to manage multi-gigabyte model weights and datasets without overwhelming the repository.
+*   **Dependency Strategy:** Configured isolated Python environments (`venv`) and managed package versions via `requirements.txt` specifically for cloud and local parity.
 
-### Phase 2: AI Fine-Tuning with MLflow
-*   **Model:** `distilbert-base-uncased` fine-tuned for 3-class sentiment classification (Negative, Neutral, Positive).
-*   **Tracking:** Used **MLflow** to log hyperparameters, loss curves, and F1 scores. Only models with >0.85 F1 were promoted for deployment.
+### Phase 2: Data Engineering & Text Cleaning
+*   **Preprocessing:** Built a custom cleaning engine using Python's `regex` and `cleantext` libraries to strip emojis, URLs, and @mentions from 17,000+ raw records.
+*   **Tokenization:** Leveraged the HuggingFace `DistilBertTokenizer` to convert raw text into highly optimized attention masks and input IDs for the GPU/CPU.
+*   **Class Imbalance:** Handled skewed sentiment data (mostly positive) using custom weighting in the loss function to ensure the AI detects negative feedback accurately.
 
-### Phase 3: Docker & AWS Deployment
-*   **Storage Optimization:** Optimized the Docker image from 4GB to 1GB by forcing a CPU-only PyTorch index, solving AWS EBS disk space limitations.
-*   **Cloud Hosting:** Deployed on Ubuntu 24.04 (AWS EC2) with custom Security Group rules for traffic routing and secure RSA key management.
+### Phase 3: Model Training & Fine-Tuning
+*   **The Engine:** Fine-tuned `distilbert-base-uncased` for three labels (Positive, Neutral, Negative).
+*   **GPU Integration:** Configured PyTorch logic to automatically detect CUDA for training but fallback to optimized CPU instructions for cost-effective cloud deployment.
 
-### Phase 4: Full-Stack Chrome Integration
-*   **Frontend:** Built a premium Glassmorphism UI using Vanilla JS and CSS3.
-*   **Scraper:** Developed a high-speed DOM scanner that captures every comment loaded in the browser.
+### Phase 4: MLOps Experiment Tracking (MLflow)
+*   **Logging:** Every training run was recorded via **MLflow**, tracking F1-Scores, Accuracy, and Learning Rate decay in real-time.
+*   **Model Registry:** Built a promotion script (`promote.py`) that strictly evaluates model versions based on testing data performance before "promoting" them to the production registry.
 
----
+### Phase 5: Cloud Deployment & Dockerization
+*   **Docker Containerization:** Engineered a multi-stage Docker build. **CRITICAL FIX:** Solved AWS disk space errors by forcing the `pip` index to use a **CPU-only version of PyTorch**, reducing the image size by 3GB.
+*   **AWS AWS Hosting:** Scaled the API to an **Amazon Web Services (AWS) EC2 t3.micro** instance. Managed security via RSA `.pem` keys and configured Security Group firewalls for Port 5000.
+*   **Detached Serving:** Used `docker run -d` to ensure the API stays alive even after the deployment terminal is closed.
 
-## 🚀 How to Install & Use
-
-### 1. Server Side (AWS EC2)
-1.  Ensure Docker is installed on your Linux server.
-2.  Clone the repository and place the model weights in `models/bert/best_model/`.
-3.  Run: `sudo docker build -t ifty-sentiment-api .`
-4.  Run: `sudo docker run -d -p 5000:5000 ifty-sentiment-api`
-
-### 2. Client Side (Chrome Extension)
-1.  Open Chrome and navigate to `chrome://extensions/`.
-2.  Enable **Developer Mode**.
-3.  Click **Load Unpacked** and select the `chrome-extension/` folder.
-4.  Open any YouTube video, scroll down to load comments, and hit **RUN SENTIMENT AUDIT**!
+### Phase 6: The "Ifty Sentiments" Chrome Extension
+*   **The UI:** Created a futuristic **Glassmorphism** interface using Vanilla JavaScript and CSS3.
+*   **The Gamification (Vibe-Rank):** Developed an algorithm that ranks videos (S, A, B, C, D, or F) based on audience health.
+*   **Dynamic Painting:** The extension injects logic directly into YouTube.com to paint every comment with a glowing sentiment border.
 
 ---
 
-## 💰 Monetization Potential
-*   **Influencer Brand Health Audit:** Charge YouTubers for a "Sentiment Health Score" report to help them avoid controversies.
-*   **Pro Version SaaS:** Charge a monthly fee for unlimited comment analysis and PDF report exports.
-*   **B2B Market Research:** Sell aggregated sentiment data on product reviews to corporate marketing firms.
+## 🛠️ Step-by-Step Installation (Baby Steps)
 
+### Step 1: Downloading the Project
+1.  Go to the [GitHub Repository](https://github.com/Usman-Ifty/yt-sentiment-mlops).
+2.  Click the green **"Code"** button and select **"Download ZIP"**.
+3.  Extract the folder onto your Desktop.
+
+### Step 2: Activating the Extension in Chrome
+1.  Open **Google Chrome** on your laptop.
+2.  In the address bar, type `chrome://extensions/` and hit Enter.
+3.  In the top-right corner, turn ON **"Developer mode"**.
+4.  In the top-left corner, click the **"Load unpacked"** button.
+5.  Select the **`chrome-extension`** folder from the project you extracted.
+6.  *Success:* You will now see the colorful "Ifty" logo in your toolbar!
+
+### Step 3: Using the AI Analytics
+1.  Navigate to ANY YouTube video (e.g., a movie trailer or a news clip).
+2.  **Scroll down** and wait for the comments to appear on the screen.
+3.  Click the tiny puzzle-piece icon at the top of Chrome and pin **"Ifty Youtube Sentiments"**.
+4.  Click the icon and hit the big button: **"RUN SENTIMENT AUDIT"**.
+5.  Watch the AI rank the video (S, A, B, C, F) and paint the comments green/yellow/red!
 ---
 
 **Developed by: [Usman Ifty](https://www.linkedin.com/in/usman-awan-a85877359/)**
