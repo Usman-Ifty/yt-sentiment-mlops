@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Ifty Youtube Comment Sentiments",
+  "version": "1.1",
+  "description": "Analyze the real sentiment of YouTube comments powerfully equipped with DistilBERT on AWS.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://16.170.230.153:5000/*",
+    "https://*.youtube.com/*"
+  ]
+}

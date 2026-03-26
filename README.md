@@ -1,78 +1,57 @@
-# YouTube Sentiment Analysis MLOps 🎥🧠
+# Ifty YouTube Comment Sentiments 🎥🚀
 
-An end-to-end Machine Learning Operations (MLOps) pipeline for analyzing YouTube comments sentiment. This project fine-tunes a BERT model using a custom dataset and serves it via a Flask API deployed on AWS EC2. It features a custom Chrome Extension that dynamically displays sentiment badges on YouTube directly in your browser.
+A professional, end-to-end MLOps pipeline for analyzing YouTube comment sentiment in real-time. This system fine-tunes a **DistilBERT** Transformer model, packages it as a highly-optimized **Docker** container, and serves it via a public API on **AWS EC2**. It is seamlessly integrated into a sleek **Chrome Extension** for gamified audience analytics.
 
-## 🚀 Phase 1: Project Initialization
+## 🌟 Key Features
+*   **Vibe Rank (Gamified Analysis):** Assigns a Letter Grade (S, A, B, C, D, or F) to every YouTube video based on overall audience mood.
+*   **Top 10 Keyword Cloud:** Automatically extracts and highlights the 10 most trending words from the comment section.
+*   **Dynamic UI Highlighting:** Literally paints the YouTube page, adding [POSITIVE], [NEUTRAL], or [NEGATIVE] glow-badges to every comment.
+*   **Public AWS API:** 24/7 inference server hosted on an Amazon EC2 t3.micro instance.
 
-This commit establishes the foundational skeleton for the MLOps pipeline, ensuring best practices for tracking and scale.
+---
 
-**Key Additions:**
-*   **Standardized Directory Structure:** Created segmented directories for `data` (raw & processed), `src` (api, data, model), `notebooks`, `tests`, and GitHub Actions.
-*   **Version Control:** Initialized Git for source code tracking.
-*   **Data Version Control (DVC):** Initialized `dvc` to manage large datasets and models outside of Git.
-*   **Dependency Management:** Added `requirements.txt` with essential libraries (`transformers`, `mlflow`, `dvc`, `flask`, `torch`).
-*   **Environment Configuration:** Added a `.env` file securely.
+## 🛠️ The MLOps Pipeline (Technical Journey)
 
-## 🧹 Phase 2: Data Preprocessing & EDA
+### Phase 1: Data Engineering & DVC
+*   **Dataset:** Cleaned and tokenized over 17,000 raw YouTube comments from Kaggle.
+*   **DVC (Data Version Control):** Integrated DVC to track large datasets and model weights securely without bloating Git history.
 
-Integrated the Kaggle raw dataset and built out the NLP cleaning pipeline. 
+### Phase 2: AI Fine-Tuning with MLflow
+*   **Model:** `distilbert-base-uncased` fine-tuned for 3-class sentiment classification (Negative, Neutral, Positive).
+*   **Tracking:** Used **MLflow** to log hyperparameters, loss curves, and F1 scores. Only models with >0.85 F1 were promoted for deployment.
 
-**Key Additions:**
-*   **Exploratory Data Analysis:** Built an interactive EDA script to explore string lengths, verify class imbalances, and map sentiment.
-*   **HuggingFace Tokenization:** Leveraged `DistilBertTokenizer` to tokenize, pad, and truncate 17,000+ texts directly into PyTorch format `.pt`.
-*   **DVC Pipelines (`dvc.yaml`):** Implemented an automated tracking and execution graph using `dvc repro`.
-*   **Unit Testing:** Pytest suite for the data pipeline.
+### Phase 3: Docker & AWS Deployment
+*   **Storage Optimization:** Optimized the Docker image from 4GB to 1GB by forcing a CPU-only PyTorch index, solving AWS EBS disk space limitations.
+*   **Cloud Hosting:** Deployed on Ubuntu 24.04 (AWS EC2) with custom Security Group rules for traffic routing and secure RSA key management.
 
-## 🤖 Phase 3: Fine-Tuning DistilBERT & MLflow Experiment Tracking
+### Phase 4: Full-Stack Chrome Integration
+*   **Frontend:** Built a premium Glassmorphism UI using Vanilla JS and CSS3.
+*   **Scraper:** Developed a high-speed DOM scanner that captures every comment loaded in the browser.
 
-Finetuned a pre-trained `distilbert-base-uncased` model to classify YouTube comments into Negative, Neutral, and Positive.
+---
 
-**Key Additions:**
-*   **Training Script:** Added `train.py` configured with PyTorch DataLoaders, weight decay, linear scheduling, and a customized CrossEntropy loss to handle class imbalances.
-*   **Experiment Registry:** Used `MLflow` to dynamically log hyperparameters, step-loss, Validation Accuracy/F1 scores, and formally register the `best_model`.
-*   **Production Promotion:** Added `promote.py` logic to evaluate newly trained models against current production thresholds (>0.80 F1) before updating `production_version.json`.
-*   **Model Coverage:** Added robust verification tests (`test_model.py`) to assert successful loading and softmax probability structures.
+## 🚀 How to Install & Use
 
-## 🌐 Phase 4: Flask API Development & Dockerization
+### 1. Server Side (AWS EC2)
+1.  Ensure Docker is installed on your Linux server.
+2.  Clone the repository and place the model weights in `models/bert/best_model/`.
+3.  Run: `sudo docker build -t ifty-sentiment-api .`
+4.  Run: `sudo docker run -d -p 5000:5000 ifty-sentiment-api`
 
-Built a production-ready REST API to serve the fine-tuned DistilBERT model and packaged it as a Docker container.
+### 2. Client Side (Chrome Extension)
+1.  Open Chrome and navigate to `chrome://extensions/`.
+2.  Enable **Developer Mode**.
+3.  Click **Load Unpacked** and select the `chrome-extension/` folder.
+4.  Open any YouTube video, scroll down to load comments, and hit **RUN SENTIMENT AUDIT**!
 
-**Key Additions:**
-*   **Flask REST API (`src/api/app.py`):** Exposes `GET /` (health check) and `POST /predict` endpoint accepting single `text` or batch `texts` returning sentiment label, confidence, and per-class scores.
-*   **CORS Support:** Enabled Cross-Origin Resource Sharing (CORS) to allow the Chrome Extension to interact with the API.
-*   **Dockerfile:** Multi-stage slim Python 3.10 image copying only the `best_model` weights and `label_map.json` — keeps the image lean (~1.5GB).
-*   **`.dockerignore`:** Excludes `mlruns/`, raw data, venvs, and notebooks from the build context.
+---
 
-**How to Run locally:**
-```bash
-# Activation
-.\venv_new\Scripts\Activate.ps1
+## 💰 Monetization Potential
+*   **Influencer Brand Health Audit:** Charge YouTubers for a "Sentiment Health Score" report to help them avoid controversies.
+*   **Pro Version SaaS:** Charge a monthly fee for unlimited comment analysis and PDF report exports.
+*   **B2B Market Research:** Sell aggregated sentiment data on product reviews to corporate marketing firms.
 
-# Run API
-python src/api/app.py
+---
 
-# build and run with Docker
-docker build -t yt-sentiment-api .
-docker run -p 5000:5000 yt-sentiment-api
-
-# Example Test (PowerShell)
-Invoke-RestMethod -Method Post -Uri "http://localhost:5000/predict" `
-    -ContentType "application/json" `
-    -Body '{"text": "This video is absolutely amazing!"}'
-```
-
-### Next Steps
-- **Phase 5:** AWS EC2 Deployment
-- **Phase 6:** Chrome Extension Integration
-- **Phase 7:** GitHub Actions CI/CD Pipeline
-
-## Phase 5: AWS EC2 Deployment
-
-Hosted the Flask Docker Container on an Amazon Web Services (AWS) EC2 `t3.micro` instance running Ubuntu 24.04. This provides a continuously available, public-facing endpoint required for the Chrome Extension to function in real-world scenarios.
-
-**Deployment Architecture & Execution Details:**
-
-*   **Instance Provisioning & Security Integration:** provisioned an AWS EC2 instance and securely managed access via an RSA `.pem` key pair. Strict file permission scoping (using `icacls`) was explicitly enforced on the Windows host to ensure SSH key confidentiality. AWS Security Groups were modified to expose inbound TCP traffic on Port 5000, establishing an open communication line to the Flask deployment.
-*   **Decoupled Model Pipeline Transfer:** Due to GitHub's stringent file payload limits, large model artifacts like `model.safetensors` inherently bypass typical version control. Secure Copy Protocol (`scp -r`) was strictly utilized to recursively copy the 255MB model artifacts and configuration files from the local Windows environment directly to the target routing path (`~/yt-sentiment-mlops/models/bert/best_model`) on the AWS server in preparation for Docker encapsulation.
-*   **Docker Containerization & Storage Optimization:** Source logic was obtained natively via `git clone`. The default 8GB Elastic Block Store (EBS) volume presented immediate storage limit errors ("No space left on device") during the Docker build stage due to the massive CUDA toolkit footprint associated with default PyTorch installations. This was critically resolved by patching the `Dockerfile` requirements sequentially, forcing `pip` to pull from the CPU-only PyTorch index (`--extra-index-url https://download.pytorch.org/whl/cpu`), drastically reducing image weight. Local dependencies unneeded by the app, such as `label_map.json`, were stripped from the Docker image layers using `sed`. 
-*   **Live Production Output:** Following the lightweight Docker image generation, the container was run in detached mode (`docker run -d -p 5000:5000`), persistently mapping the host port to the internal Flask configuration. The `/predict` inference API correctly registers POST requests directly addressed to the assigned Public Elastic IPv4 Address, ensuring immediate scalability.
+**Developed by: [Usman Ifty](https://www.linkedin.com/in/usman-awan-a85877359/)**
+**GitHub Repository:** [github.com/Usman-Ifty/yt-sentiment-mlops](https://github.com/Usman-Ifty/yt-sentiment-mlops)

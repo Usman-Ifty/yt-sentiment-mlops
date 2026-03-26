@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg: #09090b;
+      --glass: rgba(255, 255, 255, 0.04);
+      --pos: #00ff9d;
+      --neg: #ff3e3e;
+      --neu: #f7b731;
+    }
+
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; 
+        width: 360px; 
+        padding: 0; 
+        background-color: var(--bg); 
+        color: #ffffff; 
+        margin: 0;
+    }
+
+    .container { padding: 24px; }
+    
+    header {
+        display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+    }
+
+    .logo-frame {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: #111; border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 5px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    .logo-frame img { width: 100%; height: 100%; object-fit: contain; }
+
+    h2 { font-size: 15px; margin: 0; font-weight: 800; letter-spacing: 0.5px; }
+    .status-badge { font-size: 9px; color: #888; font-weight: 700; margin-top: 3px; display: inline-block; text-transform: uppercase; }
+
+    #analyzeBtn { 
+        background: white; color: black; border: none; padding: 16px; border-radius: 12px; 
+        width: 100%; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    #analyzeBtn:hover { transform: scale(1.02); background: #eee; }
+
+    #status { margin-top: 16px; font-size: 10px; color: #444; font-weight: 700; text-transform: uppercase; }
+
+    .stats-window { display: none; margin-top: 24px; }
+
+    .glass-box { background: var(--glass); border-radius: 16px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; position: relative; }
+    
+    .rank-badge {
+        position: absolute; top: -15px; right: 15px;
+        width: 38px; height: 38px; background: #ff3e3e; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 18px; color: white; border: 3px solid var(--bg);
+        box-shadow: 0 5px 15px rgba(255, 62, 62, 0.4);
+    }
+
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 16px; }
+    .st-box { flex: 1; text-align: center; }
+    .st-val { font-size: 20px; font-weight: 800; }
+    .st-lbl { font-size: 8px; color: #555; text-transform: uppercase; margin-top: 4px; font-weight: 700; }
+
+    .bar-stack { height: 6px; background: rgba(255, 255, 255, 0.02); border-radius: 10px; display: flex; overflow: hidden; }
+    .bar { height: 100%; transition: width 0.8s ease; }
+
+    .big-summary { margin-top: 16px; font-size: 12px; font-weight: 700; color: #ddd; }
+
+    .keyword-cloud { margin-top: 24px; }
+    .k-title { font-size: 8px; color: #333; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: block; }
+    .cloud-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-size: 9px; background: rgba(255, 255, 255, 0.03); padding: 5px 10px; border-radius: 6px; font-weight: 700; color: #777; border: 1px solid rgba(255,255,255,0.02); }
+
+    footer { 
+        padding: 20px 24px; border-top: 1px solid rgba(255, 255, 255, 0.05); 
+        text-align: center; font-size: 10px; font-weight: 700;
+    }
+    .links { display: flex; justify-content: center; gap: 15px; margin-top: 8px; }
+    footer a { color: #555; text-decoration: none; transition: 0.2s; }
+    footer a:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+      <header>
+          <div class="logo-frame"><img src="icon128.png"></div>
+          <div>
+            <h2>Ifty Sentiments</h2>
+            <div class="status-badge">YouTube AI Analytics</div>
+          </div>
+      </header>
+
+      <button id="analyzeBtn">RUN SENTIMENT AUDIT</button>
+      <div id="status">Ready to Scan.</div>
+
+      <div class="stats-window" id="statsContainer">
+          <div class="glass-box">
+              <div class="rank-badge" id="vibeRank">S</div>
+              <div class="stat-row">
+                  <div class="st-box"><div class="st-val" id="posCount" style="color: var(--pos)">0%</div><div class="st-lbl">Positive</div></div>
+                  <div class="st-box"><div class="st-val" id="neuCount" style="color: var(--neu)">0%</div><div class="st-lbl">Neutral</div></div>
+                  <div class="st-box"><div class="st-val" id="negCount" style="color: var(--neg)">0%</div><div class="st-lbl">Negative</div></div>
+              </div>
+              <div class="bar-stack">
+                  <div class="bar" id="barPos" style="background: var(--pos); width: 0%"></div>
+                  <div class="bar" id="barNeu" style="background: var(--neu); width: 0%"></div>
+                  <div class="bar" id="barNeg" style="background: var(--neg); width: 0%"></div>
+              </div>
+              <div class="big-summary" id="summary">...</div>
+          </div>
+
+          <div class="keyword-cloud">
+              <span class="k-title">TOP 10 TRENDING WORDS</span>
+              <div class="cloud-tags" id="cloudTags"></div>
+          </div>
+      </div>
+  </div>
+
+  <footer>
+      <div style="color: #333;">BY USMAN IFTY</div>
+      <div class="links">
+          <a href="https://github.com/Usman-Ifty/yt-sentiment-mlops" target="_blank">GITHUB</a>
+          <a href="https://www.linkedin.com/in/usman-awan-a85877359/" target="_blank">LINKEDIN</a>
+      </div>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
