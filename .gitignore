@@ -24,3 +24,7 @@ mlruns/
 
 venv/
 venv_new/
+
+# Cloud & Security
+*.pem
+aws-yt-key.pem

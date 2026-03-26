@@ -65,3 +65,14 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:5000/predict" `
 - **Phase 5:** AWS EC2 Deployment
 - **Phase 6:** Chrome Extension Integration
 - **Phase 7:** GitHub Actions CI/CD Pipeline
+
+## Phase 5: AWS EC2 Deployment
+
+Hosted the Flask Docker Container on an Amazon Web Services (AWS) EC2 `t3.micro` instance running Ubuntu 24.04. This provides a continuously available, public-facing endpoint required for the Chrome Extension to function in real-world scenarios.
+
+**Deployment Architecture & Execution Details:**
+
+*   **Instance Provisioning & Security Integration:** provisioned an AWS EC2 instance and securely managed access via an RSA `.pem` key pair. Strict file permission scoping (using `icacls`) was explicitly enforced on the Windows host to ensure SSH key confidentiality. AWS Security Groups were modified to expose inbound TCP traffic on Port 5000, establishing an open communication line to the Flask deployment.
+*   **Decoupled Model Pipeline Transfer:** Due to GitHub's stringent file payload limits, large model artifacts like `model.safetensors` inherently bypass typical version control. Secure Copy Protocol (`scp -r`) was strictly utilized to recursively copy the 255MB model artifacts and configuration files from the local Windows environment directly to the target routing path (`~/yt-sentiment-mlops/models/bert/best_model`) on the AWS server in preparation for Docker encapsulation.
+*   **Docker Containerization & Storage Optimization:** Source logic was obtained natively via `git clone`. The default 8GB Elastic Block Store (EBS) volume presented immediate storage limit errors ("No space left on device") during the Docker build stage due to the massive CUDA toolkit footprint associated with default PyTorch installations. This was critically resolved by patching the `Dockerfile` requirements sequentially, forcing `pip` to pull from the CPU-only PyTorch index (`--extra-index-url https://download.pytorch.org/whl/cpu`), drastically reducing image weight. Local dependencies unneeded by the app, such as `label_map.json`, were stripped from the Docker image layers using `sed`. 
+*   **Live Production Output:** Following the lightweight Docker image generation, the container was run in detached mode (`docker run -d -p 5000:5000`), persistently mapping the host port to the internal Flask configuration. The `/predict` inference API correctly registers POST requests directly addressed to the assigned Public Elastic IPv4 Address, ensuring immediate scalability.
