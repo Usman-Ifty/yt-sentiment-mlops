@@ -67,15 +67,15 @@ document.getElementById('analyzeBtn').addEventListener('click', async () => {
             const neuPct = Math.round((neu/total)*100);
             const negPct = Math.round((neg/total)*100);
 
-            const health = Math.max(0, posPct - (negPct * 1.3));
+            const health = (posPct * 1.2) + (neuPct * 0.3) - (negPct * 0.5);
             let rank = 'F';
             let rankColor = '#ff3e3e';
 
-            if (health > 80) { rank = 'S'; rankColor = '#00ff9d'; }
-            else if (health > 65) { rank = 'A'; rankColor = '#00ff9d'; }
+            if (health > 90) { rank = 'S'; rankColor = '#00ff9d'; }
+            else if (health > 70) { rank = 'A'; rankColor = '#00ff9d'; }
             else if (health > 50) { rank = 'B'; rankColor = '#f7b731'; }
-            else if (health > 35) { rank = 'C'; rankColor = '#f7b731'; }
-            else if (health > 20) { rank = 'D'; rankColor = '#ff3e3e'; }
+            else if (health > 30) { rank = 'C'; rankColor = '#f7b731'; }
+            else if (health > 15) { rank = 'D'; rankColor = '#ff3e3e'; }
 
             rankEl.innerText = rank;
             rankEl.style.background = rankColor;

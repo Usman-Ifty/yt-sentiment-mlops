@@ -45,6 +45,57 @@ To fix this, we engineered a massively larger and more diverse intelligence pipe
 
 ---
 
+## 🚀 Project Quick-Start (Command Roadmap)
+Go from Zero to AI-Production in 5 minutes by running these in your terminal (PowerShell for Windows):
+
+### 1️⃣ Clone & Environment Setup
+```powershell
+# Clone the repository
+git clone https://github.com/Usman-Ifty/yt-sentiment-mlops.git
+cd yt-sentiment-mlops
+
+# Create and Activate the Virtual Environment
+python -m venv venv_new
+.\venv_new\Scripts\Activate.ps1
+```
+
+### 2️⃣ Install Core Intelligence Layer
+```powershell
+pip install -r requirements.txt
+# Special install for small CPU servers (EC2 Optimization)
+pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+```
+
+### 3️⃣ Run the Intelligence Pipeline
+```powershell
+# Step A: Build the 80k Hybrid Dataset
+python src/data/download_genz_data.py
+
+# Step B: Clean Slang & Tokenize for DistilBERT
+python src/data/preprocess_genz.py
+```
+
+### 4️⃣ Train & Monitor (MLflow Rigour)
+```powershell
+# Start the local Experiment tracking UI
+mlflow ui
+
+# Run the 80k-record training session (CPU or GPU)
+python src/model/train.py
+```
+
+### 5️⃣ Live API & Production Deployment
+```powershell
+# Run the Flask API locally
+python src/api/app.py
+
+# OR Build and Run the Dockerized Container
+docker build -t yt-sentiment-api .
+docker run -p 5000:5000 yt-sentiment-api
+```
+
+---
+
 ## 🔮 Future Roadmap (v5.0 Ideas)
 *   **AI Reply Suggestions:** Use the model results to suggest a "Witty" or "Supportive" reply to a comment.
 *   **Emoji Breakdown:** A visual cloud showing the most dominant emojis in the comment section (💀, 🔥, 👑).

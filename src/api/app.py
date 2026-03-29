@@ -60,10 +60,62 @@ app = Flask(__name__)
 CORS(app) # Enable CORS for Chrome Extension support later
 
 
+# ---------------------------------------------------------------------------
+# Gen-Z Slang Normalization Logic (Ifty-Mashood Special)
+# ---------------------------------------------------------------------------
+SLANG_MAP = {
+    "w": "great winning excellent",
+    "l": "bad losing failure",
+    "dead": "so funny laughing",
+    "funny": "laughing great",
+    "cooked": "bad lost over",
+    "mid": "average neutral boring",
+    "rizz": "charismatic excellent",
+    "goat": "legendary greatest",
+    "fire": "amazing awesome",
+    "fr": "for real truly",
+    "ngl": "not gonna lie truly",
+    "no cap": "truthfully truly",
+}
+
+EMOJI_SENTIMENT = {
+    "💀": " funny laughing ",
+    "🔥🔥": " amazing amazing ",
+    "🔥": " amazing fire ",
+    "🐐": " legendary goat ",
+    "👑": " king great ",
+    "🙌": " amazing respect ",
+    "😭": " laughing crying funny ",
+    "💯": " perfect excellent ",
+    "🤡": " bad clown ",
+    "👎": " bad dislike ",
+    "🤮": " gross bad ",
+}
+
+def normalize_slang(text: str) -> str:
+    """Pre-process Gen-Z slang and emojis for the AI model."""
+    text = text.lower()
+    for emoji, replacement in EMOJI_SENTIMENT.items():
+        text = text.replace(emoji, replacement)
+    
+    words = text.split()
+    normalized = []
+    for w in words:
+        clean_w = "".join(char for char in w if char.isalnum())
+        if clean_w in SLANG_MAP:
+            normalized.append(SLANG_MAP[clean_w])
+        else:
+            normalized.append(w)
+    return " ".join(normalized)
+
+
 def predict_text(text: str) -> dict:
     """Run inference on a single text string."""
+    # Step 1: Normalize the vibe
+    vibe_text = normalize_slang(text)
+    
     encoding = tokenizer(
-        text,
+        vibe_text,
         truncation=True,
         max_length=MAX_LEN,
         padding="max_length",
@@ -100,34 +152,21 @@ def health():
 
 
 @app.route("/predict", methods=["POST"])
-def predict():
-    """
-    Body (JSON):
-      { "text": "This video is amazing!" }
-    OR a list:
-      { "texts": ["...", "..."] }
-    """
-    data = request.get_json(force=True, silent=True)
-    if data is None:
-        return jsonify({"error": "Invalid JSON body"}), 400
-
-    # Single text
-    if "text" in data:
-        text = str(data["text"]).strip()
-        if not text:
-            return jsonify({"error": "Empty text"}), 400
-        result = predict_text(text)
-        return jsonify({"input": text, **result})
-
     # Batch texts
     if "texts" in data:
         texts = data["texts"]
         if not isinstance(texts, list) or len(texts) == 0:
             return jsonify({"error": "texts must be a non-empty list"}), 400
-        results = [{"input": t, **predict_text(str(t))} for t in texts]
+        results = [{"input": str(t), **predict_text(str(t))} for t in texts]
         return jsonify({"predictions": results})
 
-    return jsonify({"error": "Provide 'text' or 'texts' in the request body"}), 400
+    # Single text fallback
+    text = data.get("text", "").strip()
+    if not text:
+        return jsonify({"error": "Provide 'text' or 'texts' in request body"}), 400
+    
+    result = predict_text(text)
+    return jsonify({"input": text, **result})
 
 
 if __name__ == "__main__":
