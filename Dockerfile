@@ -1,36 +1,23 @@
-# ── Stage 1: base ──────────────────────────────────────────────────────────
 FROM python:3.10-slim
 
-# Prevents Python from writing .pyc files and buffers stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Only the packages the API actually needs at runtime
+RUN pip install --no-cache-dir \
+    flask==3.0.3 \
+    flask-cors==4.0.0 \
+    transformers==4.41.2 \
+    safetensors==0.4.3 \
+    torch==2.3.0+cpu \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    && rm -rf /root/.cache/pip
 
-# ── Dependencies ────────────────────────────────────────────────────────────
-COPY requirements.txt .
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+COPY src/api/app.py         ./src/api/app.py
+COPY data/processed/label_map.json ./data/processed/label_map.json
+COPY models/bert/best_model ./models/bert/best_model
 
-# ── Copy source ─────────────────────────────────────────────────────────────
-# Copy only the essentials for the API
-COPY models/bert/best_model  /app/models/bert/best_model
-COPY data/processed/label_map.json /app/data/processed/label_map.json
-COPY src/ /app/src/
-
-# ── Runtime ─────────────────────────────────────────────────────────────────
 EXPOSE 5000
-
-ENV PORT=5000
-
-# Run with Gunicorn for production
-# RUN pip install gunicorn
-# CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.api.app:app"]
-
-# Run with flask for now
 CMD ["python", "src/api/app.py"]

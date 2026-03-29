@@ -2,8 +2,43 @@
 __pycache__/
 *.pyc
 .env
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Data (tracked by DVC, not Git)
+# Virtual Environments
+venv/
+venv_new/
+.venv/
+
+# MLOps & Data (CRITICAL: Ignore large CSVs and Tensors)
+*.csv
+*.pt
+*.bin
+*.h5
+*.safetensors
+*.onnx
+
+# Data Folders (Ignore everything except DVC pointers)
 data/raw/*
 !data/raw/*.dvc
 !data/raw/.gitignore
@@ -11,20 +46,25 @@ data/processed/*
 !data/processed/*.dvc
 !data/processed/.gitignore
 
-# Models
-*.pt
-*.bin
-*.safetensors
+# Model Weights
 models/bert/*
+!models/bert/.gitignore
 !models/production_version.json
+
+# Experiment Tracking
 mlruns/
+.mlflow/
 
-# IDE
+# IDE & OS
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db
 
-venv/
-venv_new/
-
-# Cloud & Security
+# Cloud & Security (STRICT IGNORE for AWS keys)
 *.pem
 aws-yt-key.pem
+
+# KEEP the Chrome Extension safe (Small text/image files only)
+!chrome-extension/
+*.zip

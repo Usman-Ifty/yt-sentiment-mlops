@@ -48,28 +48,32 @@ print(f"Using device: {DEVICE}")
 def get_dataloaders():
     dataset = load_from_disk(os.path.join(PROCESSED_DIR, "tokenized"))
 
+    # CRITICAL: Convert HuggingFace Dataset columns to PyTorch tensors
+    dataset.set_format(type="torch", columns=["input_ids", "attention_mask", "labels"])
+
     train_loader = DataLoader(
         dataset["train"],
         batch_size=CONFIG["batch_size"],
         shuffle=True,
-        num_workers=2,
-        pin_memory=True,
+        num_workers=0,
+        pin_memory=False,
     )
     val_loader = DataLoader(
         dataset["val"],
         batch_size=CONFIG["batch_size"] * 2,
         shuffle=False,
-        num_workers=2,
-        pin_memory=True,
+        num_workers=0,
+        pin_memory=False,
     )
     test_loader = DataLoader(
         dataset["test"],
         batch_size=CONFIG["batch_size"] * 2,
         shuffle=False,
-        num_workers=2,
-        pin_memory=True,
+        num_workers=0,
+        pin_memory=False,
     )
     return train_loader, val_loader, test_loader
+
 
 
 # ── model ─────────────────────────────────────────────────
